@@ -1,0 +1,153 @@
+	1.
+SELECT AVG(hd)
+FROM PC
+
+	2.
+SELECT AVG(price)
+FROM Laptop
+WHERE speed >= 3.0
+
+	3.
+SELECT AVG(price)
+FROM Laptop L, Product P
+WHERE P.maker = 'A' AND P.model = L.model
+
+	4.
+SELECT AVG(price)
+FROM 
+(SELECT price FROM Laptop L, Product P WHERE P.maker = 'A' AND P.model = L.model
+UNION
+SELECT price FROM PC, Product P WHERE P.maker = 'A' AND PC.model = P.model)
+
+	5.가격별로 평균속도를 모두 출력해야 한다.
+SELECT price, AVG(speed)
+FROM PC
+GROUP BY price
+
+
+
+	Assignments
+
+	Schemas
+Students(studentID, name, score, county)
+Professors(facultyID, name, age, county)
+Counties(countyName, population, city)
+COVID(patientID, city)
+
+	1.
+SELECT countyName, AVG(score)
+FROM Counties c, Students s
+WHERE c.countyName = s.county
+GROUP BY countyName
+
+	2.
+SELECT city, AVG(score)
+FROM Counties c, Students s
+WHERE c.countyName = s.county
+GROUP BY city
+
+	3.
+SELECT Professors.name, Students.name
+FROM (
+	// 이 테이블에서 이름 값만 빼오는 것이다
+	SELECT Professors.name, Professors.age, Students.name, MAX(Students.score)
+	FROM 
+		(SELECT p.name, MAX(p.age), s.name, s.score
+		FROM Professors p, Students s
+		WHERE p.county = s.county)
+)	
+
+안되면 MAX인 나이를 찾은 후, WHERE로 그 max와 같은 값을 가지는 tuple을 select하자.
+=> 그래야 한다.
+SELECT ProductName, SupplierID
+FROM Products, (SELECT MIN(SupplierID) AS ms FROM Products) M
+WHERE Products.SupplierID = M.ms
+
+
+	SELECT name, MAX(age) as maxage, county
+    FROM Professors
+    GROUP BY county
+
+=> 각 county별로 나이가 가장 많은 교수들을 추려내는 query
+
+SELECT Ep.name AS ProfName, Hs.name AS StudName, Ep.county
+FROM
+(SELECT name, MAX(age) as maxage, county FROM Professors GROUP BY county) AS Ep,
+(SELECT name, MAX(score) as highscore, county FROM Students GROUP BY county) AS Hs
+WHERE Ep.county = HS.county
+
+
+SELECT op.name AS profName, fs.name AS studName
+FROM
+(
+	SELECT name, prof.county 
+	FROM Professors prof, ( SELECT county, max(age) as oldage FROM Professors GROUP BY county ) oldest
+	WHERE prof.county = oldest.county AND prof.age >= oldest.oldage
+) op,
+(
+	SELECT name, stud.county
+	FROM Students stud, ( SELECT county, max(score) as maxscore FROM Students GROUP BY county ) firstplace
+	WHERE stud.county = firstplace.county AND stud.score >= firstplace.maxscore
+) fs
+WHERE op.county = fs.county
+ORDER BY op.county;
+
+
+	4.
+
+SELECT Epc.name AS ProfName, Hsc.name AS StudName, Hsc.city
+FROM
+(
+	SELECT pc.name, MAX(pc.age) as maxage, pc.city FROM 
+	(SELECT p.name, p.age, c.city FROM Professors p, Counties c WHERE p.county = c.countyName) AS pc
+	GROUP BY pc.city 
+) AS Epc,
+(
+	SELECT sc.name, MAX(sc.score) as highscore, sc.city FROM
+	(SELECT s.name, s.score, c.city FROM Students s, Counties c WHERE s.county = c.countyName) AS sc
+	GROUP BY sc.city
+) AS Hsc
+WHERE Epc.city = Hsc.city
+
+
+SELECT op.name AS profName, fs.name AS studName
+FROM
+(
+	SELECT prof.name, oldest.city
+	FROM Professors prof, Counties cnt, ( SELECT city, max(age) as oldage FROM Professors p, Counties c WHERE p.county = c.countyName GROUP BY c.city ) oldest
+	WHERE prof.county = cnt.countyName AND cnt.city = oldest.city AND prof.age >= oldest.oldage
+) op,
+(
+	SELECT stud.name, firstplace.city
+	FROM Students stud, Counties cnt, ( SELECT city, max(score) as maxscore FROM Students s, Counties c WHERE s.county = c.countyName GROUP BY c.city ) firstplace
+	WHERE stud.county = cnt.countyName AND cnt.city = firstplace.city AND stud.score >= firstplace.maxscore
+) fs
+WHERE op.city = fs.city
+ORDER BY op.city;
+
+
+
+	5.
+
+SELECT stud.name AS studName, dangercities.city as cityName
+FROM Students stud, Counties c, 
+(
+	SELECT cities.city, (infested.cnt / cities.totalpopulation) AS ratio
+	FROM
+	(
+		SELECT city, COUNT(patientID) AS cnt
+		FROM COVID
+		GROUP BY COVID.city
+	) infested,
+	(  
+		SELECT city, SUM(population) as totalpopulation
+		FROM Counties
+		GROUP BY city
+	) cities
+	WHERE infested.city = cities.city
+	ORDER BY ratio DESC
+	LIMIT 3
+) dangercities
+WHERE stud.county = c.countyName AND c.city = dangercities.city
+
+

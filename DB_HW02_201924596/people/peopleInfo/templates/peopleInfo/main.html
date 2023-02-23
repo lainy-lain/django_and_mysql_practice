@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PeopleInfo</title>
+    <style>
+        table {
+            border-collapse: separate;
+            border-spacing: 40px 0px;
+            border: 1px solid;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>Students table</h2>
+    <div>
+        <button type="button" onclick="location.href='peopleInfo/addStudRecords/'">Add records from csv</button>
+    </div>
+    <br/>
+    <table>
+        <tr>
+            <th><strong>studentID</strong></th>
+            <th><strong>name</strong></th>
+            <th><strong>score</strong></th>
+            <th><strong>county</strong></th>
+        </tr>
+    {% for student in students %}
+        <tr>
+            <td>{{ student.studentID }}</td>
+            <td>{{ student.name }}</td>
+            <td>{{ student.score }}</td>
+            <td>{{ student.county }}</td>
+        </tr>
+    {% endfor %}
+    </table>
+
+    <br/>
+    <h2>Professors table</h2>
+    <div>
+        <button type="button" onclick="location.href='peopleInfo/addProfRecords/'">Add records from csv</button>
+    </div>
+    <br/>
+    <table>
+        <tr>
+            <th><strong>facultyID</strong></th>
+            <th><strong>name</strong></th>
+            <th><strong>age</strong></th>
+            <th><strong>county</strong></th>
+        </tr>
+    {% for professor in professors %}
+        <tr>
+            <td>{{ professor.facultyID }}</td>
+            <td>{{ professor.name }}</td>
+            <td>{{ professor.age }}</td>
+            <td>{{ professor.county }}</td>
+        </tr>
+    {% endfor %}
+    </table>
+
+    <br/>
+    <h2>Counties table</h2>
+    <div>
+        <button type="button" onclick="location.href='peopleInfo/addCountyRecords/'">Add records from csv</button>
+    </div>
+    <br/>
+    <table>
+        <tr>
+            <th><strong>countyName</strong></th>
+            <th><strong>population</strong></th>
+            <th><strong>city</strong></th>
+        </tr>
+    {% for county in counties %}
+        <tr>
+            <td>{{ county.countyName }}</td>
+            <td>{{ county.population }}</td>
+            <td>{{ county.city }}</td>
+        </tr>
+    {% endfor %}
+    </table>
+
+    <br/>
+    <h2>COVID table</h2>
+    <div>
+        <button type="button" onclick="location.href='peopleInfo/addCovidRecords/'">Add records from csv</button>
+    </div>
+    <br/>
+    <table>
+        <tr>
+            <th><strong>patientID</strong></th>
+            <th><strong>city</strong></th>
+        </tr>
+    {% for covid in covids %}
+        <tr>
+            <td>{{ covid.patientID }}</td>
+            <td>{{ covid.city }}</td>
+        </tr>
+    {% endfor %}
+    </table>
+
+
+    <!-- QUERY RESULT TABLE -->
+    <br/>
+    <h2>Query #1:</h2>
+    <table>
+        <tr>
+            <th><strong>countyName</strong></th>
+            <th><strong>averageScore</strong></th>
+        </tr>
+    {% for query1result in query1Results %}
+        <tr>
+            <td>{{ query1result.countyName }}</td>
+            <td>{{ query1result.averageScore }}</td>
+        </tr>
+    {% endfor %}
+    </table>
+
+
+    <br/>
+    <h2>Query #2:</h2>
+    <table>
+        <tr>
+            <th><strong>cityName</strong></th>
+            <th><strong>averageScore</strong></th>
+        </tr>
+    {% for query2result in query2Results %}
+        <tr>
+            <td>{{ query2result.cityName }}</td>
+            <td>{{ query2result.averageScore }}</td>
+        </tr>
+    {% endfor %}
+    </table>
+
+
+    <br/>
+    <h2>Query #3:</h2>
+    <table>
+        <tr>
+            <th><strong>professorName</strong></th>
+            <th><strong>studentName</strong></th>
+        </tr>
+    {% for query3result in query3Results %}
+        <tr>
+            <td>{{ query3result.professorName }}</td>
+            <td>{{ query3result.studentName }}</td>
+        </tr>
+    {% endfor %}
+    </table>
+
+
+    <br/>
+    <h2>Query #4:</h2>
+    <table>
+        <tr>
+            <th><strong>professorName</strong></th>
+            <th><strong>studentName</strong></th>
+        </tr>
+    {% for query4result in query4Results %}
+        <tr>
+            <td>{{ query4result.professorName }}</td>
+            <td>{{ query4result.studentName }}</td>
+        </tr>
+    {% endfor %}
+    </table>
+
+
+    <br/>
+    <h2>Query #5:</h2>
+    <table>
+        <tr>
+            <th><strong>studentName</strong></th>
+            <th><strong>cityName</strong></th>
+        </tr>
+    {% for query5result in query5Results %}
+        <tr>
+            <td>{{ query5result.studentName }}</td>
+            <td>{{ query5result.cityName }}</td>
+        </tr>
+    {% endfor %}
+    </table>
+
+</body>
+</html>
